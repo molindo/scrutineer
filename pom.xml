@@ -20,7 +20,7 @@
     <url>https://github.com/molindo/scrutineer</url>
     <scm>
         <connection>scm:git:git://github.com/molindo/scrutineer.git</connection>
-        <developerConnection>scm:git:git@github.com:Aconex/scrutineer.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:molindo/scrutineer.git</developerConnection>
         <url>https://github.com/molindo/scrutineer</url>
     </scm>
     <licenses>
@@ -326,65 +326,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>appassembler-maven-plugin</artifactId>
-                        <version>1.3</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>assemble</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <extraJvmArguments>-Xmx1024m</extraJvmArguments>
-                            <useWildcardClassPath>true</useWildcardClassPath>
-                            <repositoryLayout>flat</repositoryLayout>
-                            <repositoryName>lib</repositoryName>
-                            <programs>
-                                <program>
-                                    <mainClass>com.aconex.scrutineer.Scrutineer</mainClass>
-                                    <name>scrutineer</name>
-                                </program>
-                            </programs>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/appassembler.xml</descriptor>
-                            </descriptors>
-                            <attach>false</attach>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>make-assembly</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.1.2</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
