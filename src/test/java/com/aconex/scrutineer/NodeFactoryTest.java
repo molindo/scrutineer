@@ -13,10 +13,8 @@ public class NodeFactoryTest {
     public void shouldCreateNodeWithCorrectSettings() {
 
         NodeFactory nodeFactory = new NodeFactory();
-        ScrutineerCommandLineOptions commandLineOptions = new ScrutineerCommandLineOptions();
-        commandLineOptions.clusterName = "mycluster";
 
-        Settings settings = nodeFactory.createSettings(commandLineOptions);
+        Settings settings = nodeFactory.createSettings("mycluster");
 
         assertThat(settings.get("cluster.name"), is("mycluster"));
         assertThat(settings.get("node.client"), is("true"));

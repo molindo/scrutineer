@@ -9,13 +9,13 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 public class NodeFactory {
 
-    public Node createNode(ScrutineerCommandLineOptions commandLineOptions) {
-        return nodeBuilder().settings(createSettings(commandLineOptions)).node();
+    public Node createNode(String clusterName) {
+        return nodeBuilder().settings(createSettings(clusterName)).node();
     }
 
-    Settings createSettings(ScrutineerCommandLineOptions commandLineOptions) {
+    Settings createSettings(String clusterName) {
         return ImmutableSettings.settingsBuilder()
-                .put("cluster.name", commandLineOptions.clusterName)
+                .put("cluster.name", clusterName)
                 .put("node.client", true)
                 .put("node.name", "scrutineer")
                 .build();
