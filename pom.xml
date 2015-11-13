@@ -17,11 +17,11 @@
         cluster contains correct information from a JDBC source.
     </description>
     <inceptionYear>2011</inceptionYear>
-    <url>https://github.com/Aconex/scrutineer</url>
+    <url>https://github.com/molindo/scrutineer</url>
     <scm>
-        <connection>scm:git:git://github.com/Aconex/scrutineer.git</connection>
+        <connection>scm:git:git://github.com/molindo/scrutineer.git</connection>
         <developerConnection>scm:git:git@github.com:Aconex/scrutineer.git</developerConnection>
-        <url>https://github.com/Aconex/scrutineer</url>
+        <url>https://github.com/molindo/scrutineer</url>
     </scm>
     <licenses>
         <license>
