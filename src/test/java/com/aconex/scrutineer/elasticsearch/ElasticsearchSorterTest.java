@@ -16,7 +16,7 @@ import com.aconex.scrutineer.IdAndVersion;
 import com.fasterxml.sort.Sorter;
 import com.google.common.io.CountingInputStream;
 
-public class ElasticSearchSorterTest {
+public class ElasticsearchSorterTest {
 
 	@Mock
 	private Sorter<IdAndVersion> sorter;
@@ -32,7 +32,7 @@ public class ElasticSearchSorterTest {
 
 	@Test
 	public void shouldSortInputStream() throws IOException {
-		final ElasticSearchSorter elasticSearchSorter = new ElasticSearchSorter(sorter);
+		final ElasticsearchSorter elasticSearchSorter = new ElasticsearchSorter(sorter);
 		elasticSearchSorter.sort(inputstream, outputstream);
 		verify(sorter).sort(isA(CountingInputStream.class), eq(outputstream));
 	}

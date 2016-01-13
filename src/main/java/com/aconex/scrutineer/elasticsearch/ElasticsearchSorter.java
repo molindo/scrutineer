@@ -11,13 +11,13 @@ import com.aconex.scrutineer.LogUtils;
 import com.fasterxml.sort.Sorter;
 import com.google.common.io.CountingInputStream;
 
-public class ElasticSearchSorter {
+public class ElasticsearchSorter {
 
 	private static final Logger LOG = LogUtils.loggerForThisClass();
 
 	private final Sorter<IdAndVersion> sorter;
 
-	public ElasticSearchSorter(final Sorter<IdAndVersion> sorter) {
+	public ElasticsearchSorter(final Sorter<IdAndVersion> sorter) {
 		this.sorter = sorter;
 	}
 

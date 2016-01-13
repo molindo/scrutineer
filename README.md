@@ -4,7 +4,7 @@ The Why
 =======
 
 When you have a Lucene-based index of substantial size, say many hundreds of millions of records, what you want is confidence
-that your index is correct. In many cases, people use Solr/ElasticSearch/Compass to index their central database, mongodb,
+that your index is correct. In many cases, people use Solr/Elasticsearch/Compass to index their central database, mongodb,
 hbase etc so the index is a secondary storage of data.
 
 How do you know if your index is accurate? Can you just reindex 500 million documents anytime you like? (That's the Aliens: "Nuke the site from
@@ -25,24 +25,24 @@ Scrutineer relies on your data having 2 core properties:
 * a Version - something stored in your primary datastore for that object that represents the temporal state of that object
 
 The Version property is commonly used in an Optimistic Locking pattern. If you store the ID & Version information in your
-secondary store (say, Solr/ElasticSearch) then you can always compare for any given item whether the version in secondary store is up
+secondary store (say, Solr/Elasticsearch) then you can always compare for any given item whether the version in secondary store is up
 to date.
 
 Scrutineer takes a stream from your primary, and a stream from your secondary store, presumes they are sorted identically (more
 on that later) and walks the streams doing a merge comparison. It detects 4 states:
 
 1. Both items are identical (yay!)
-2. An ID is missing from the secondary stream (A missed add?  maybe that index message you sent to Solr/ElasticSearch never made it, anyway, it's not there)
+2. An ID is missing from the secondary stream (A missed add?  maybe that index message you sent to Solr/Elasticsearch never made it, anyway, it's not there)
 3. An ID was detected in the secondary, but wasn't in the primary stream (A missed delete?  something was deleted on the primary, but the secondary never got the memo)
-4. The ID exists in both streams, but the Version values are inconsistent (A missed update?  similar to the missed add, this time perhaps an update to a row in your DB never made it to Solr/ElasticSearch)
+4. The ID exists in both streams, but the Version values are inconsistent (A missed update?  similar to the missed add, this time perhaps an update to a row in your DB never made it to Solr/Elasticsearch)
 
 Example
 =======
 Here's an example, 2 streams in sorted order, one from the Database (your point-of-truth), 
-and one from ElasticSearch (the one you're checking) with the <ID>:<VERSION> for each side:
+and one from Elasticsearch (the one you're checking) with the <ID>:<VERSION> for each side:
 
 <table border="1">
-  <tr><th>Database</th><th>ElasticSearch</th></tr>
+  <tr><th>Database</th><th>Elasticsearch</th></tr>
   <tr><td>1:12345</td><td>1:12345</td></tr>
   <tr><td>2:23455</td><td>3:84757</td></tr>
   <tr><td>3:84757</td><td>4:98765</td></tr>
@@ -52,9 +52,9 @@ and one from ElasticSearch (the one you're checking) with the <ID>:<VERSION> for
 
 Scrutineer picks up that:
 
-* ID '2' is missing from ElasticSearch
-* ID '5' was deleted from the database at some point, but ElasticSearch still has it in there
-* ID '6' is visible in ElasticSearch but appears to have the wrong version
+* ID '2' is missing from Elasticsearch
+* ID '5' was deleted from the database at some point, but Elasticsearch still has it in there
+* ID '6' is visible in Elasticsearch but appears to have the wrong version
 
 Running Scrutineer
 ==================
@@ -80,9 +80,9 @@ package.  We already have a JTDS driver in there if you're using SQL Server (tha
 * **jdbcUser** - user account to access your JDBC Database
 * **jdbcPassword** -- password required for the user credentials
 * **sql** - The SQL used to generate a lexicographical stream of ID & Version values (in that column order)
-* **clusterName** - this is your ElasticSearch cluster name used to autodetect and connect to a node in your cluster
-* **indexName** - the name of the index on your ElasticSearch cluster
-* **query** - A query_parser compatible search query that returns all documents in your ElasticSearch index relating to the SQL query you're using
+* **clusterName** - this is your Elasticsearch cluster name used to autodetect and connect to a node in your cluster
+* **indexName** - the name of the index on your Elasticsearch cluster
+* **query** - A query_parser compatible search query that returns all documents in your Elasticsearch index relating to the SQL query you're using
   Since it is common for an index to contain a type-per-db-table you can use the "_type:<type>" search query to filter for all values for that type.
 * **numeric** - use this if your query returns results numerically ordered 
 
@@ -138,7 +138,7 @@ The TAB value is still the field delimiter here.
 Memory
 ======
 
-By default, Scrutineer allocates 256m to the Java Heap, which is used for sort, and ElasticSearch result buffers.  This should be more than
+By default, Scrutineer allocates 256m to the Java Heap, which is used for sort, and Elasticsearch result buffers.  This should be more than
 enough for the majority of cases but if you find you get an OutOfMemoryError, you can override the JAVA_OPTS environment variable
 to provide more heap.  e.g.
 
@@ -151,19 +151,19 @@ Sorting
 __*VERY IMPORTANT*__: Scrutineer relies on both streams to be sorted using an identical mechanism. It
 requires input streams to be in lexicographical (default) or numerical (indicate using `--numeric`) sort order.
 
-ElasticSearch
+Elasticsearch
 =============
 
-Since Aconex uses ElasticSearch, Scrutineer supports ES out of the box, but it would not be difficult for others to integrate
+Since Aconex uses Elasticsearch, Scrutineer supports ES out of the box, but it would not be difficult for others to integrate
 a Solr stream and wire something up. Happy to take Pull Requests!
 
 What are the 'best practices' for using Scrutineer?
 ===================================================
 
-The authors of Scrutineer, Aconex, index content from a JDBC data source and index using ElasticSearch.  We do the following:
+The authors of Scrutineer, Aconex, index content from a JDBC data source and index using Elasticsearch.  We do the following:
 
 * In the database table of the object being indexed we add an Insert/Update trigger to populate a 'lastupdated' timestamp column as our Version property
-* When we index into ElasticSearch, we set the Version property of the item using the VersionType.EXTERNAL setting.  
+* When we index into Elasticsearch, we set the Version property of the item using the VersionType.EXTERNAL setting.  
 * We create an SQL Index on this tuple so these 2 fields can be retrieved from the database very fast
 
 
@@ -171,7 +171,7 @@ Assumptions
 ===========
 
 * Your Version property is Long compatible.  You can use java.sqlTimestamps column types too as a Version (that's what we do)
-* Aconex is DB->ElasticSearch centric at the moment.  We've tried to keep things loosely coupled, so it should be 
+* Aconex is DB->Elasticsearch centric at the moment.  We've tried to keep things loosely coupled, so it should be 
 simple to add further integration points for other Primary & Secondary sources (HBase, MongoDB, Solr).
 
 JDBC Drivers

@@ -19,14 +19,14 @@ import org.mockito.Mock;
 import com.aconex.scrutineer.IdAndVersion;
 
 @SuppressWarnings("unsafe")
-public class ElasticSearchIdAndVersionStreamTest {
+public class ElasticsearchIdAndVersionStreamTest {
 
 	private static final String SORTED_FILENAME = "elastic-search-sorted.dat";
 
 	@Mock
-	private ElasticSearchDownloader elasticSearchDownloader;
+	private ElasticsearchDownloader elasticSearchDownloader;
 	@Mock
-	private ElasticSearchSorter elasticSearchSorter;
+	private ElasticsearchSorter elasticSearchSorter;
 	@Mock
 	private IteratorFactory iteratorFactory;
 	@Mock
@@ -45,7 +45,7 @@ public class ElasticSearchIdAndVersionStreamTest {
 
 	@Test
 	public void shouldDownloadAndSortOnSetup() throws IOException {
-		final ElasticSearchIdAndVersionStream elasticSearchIdAndVersionStream = spy(new ElasticSearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
+		final ElasticsearchIdAndVersionStream elasticSearchIdAndVersionStream = spy(new ElasticsearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
 				.getJavaIoTmpDir().getAbsolutePath()));
 		doReturn(sortedOutputStream).when(elasticSearchIdAndVersionStream).createSortedOutputStream();
 		doReturn(unSortedOutputStream).when(elasticSearchIdAndVersionStream).createUnsortedOutputStream();
@@ -57,7 +57,7 @@ public class ElasticSearchIdAndVersionStreamTest {
 
 	@Test
 	public void shouldReturnAFileIterator() throws IOException {
-		final ElasticSearchIdAndVersionStream elasticSearchIdAndVersionStream = new ElasticSearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
+		final ElasticsearchIdAndVersionStream elasticSearchIdAndVersionStream = new ElasticsearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
 				.getJavaIoTmpDir().getAbsolutePath());
 		when(iteratorFactory.forFile(new File(SystemUtils.getJavaIoTmpDir(), SORTED_FILENAME))).thenReturn(iterator);
 		assertThat(elasticSearchIdAndVersionStream.iterator(), is(iterator));

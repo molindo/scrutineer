@@ -7,11 +7,12 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 
+import com.aconex.scrutineer.ElasticsearchIteratorFactory;
 import com.aconex.scrutineer.IdAndVersion;
 import com.aconex.scrutineer.IdAndVersionFactory;
 import com.aconex.scrutineer.LogUtils;
 
-public abstract class ElasticSearchDownloader {
+public class ElasticsearchDownloader {
 
 	private static final Logger LOG = LogUtils.loggerForThisClass();
 
@@ -21,8 +22,11 @@ public abstract class ElasticSearchDownloader {
 
 	private final IdAndVersionFactory idAndVersionFactory;
 
-	public ElasticSearchDownloader(final IdAndVersionFactory idAndVersionFactory) {
+	private final ElasticsearchIteratorFactory iteratorFactory;
+
+	public ElasticsearchDownloader(final IdAndVersionFactory idAndVersionFactory, final ElasticsearchIteratorFactory iteratorFactory) {
 		this.idAndVersionFactory = idAndVersionFactory;
+		this.iteratorFactory = iteratorFactory;
 	}
 
 	public void downloadTo(final OutputStream outputStream) {
@@ -34,7 +38,7 @@ public abstract class ElasticSearchDownloader {
 	private void doDownloadTo(final OutputStream outputStream) {
 		try {
 			final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			consumeBatches(objectOutputStream, iterate(idAndVersionFactory));
+			consumeBatches(objectOutputStream, iteratorFactory.iterate(idAndVersionFactory));
 			objectOutputStream.close();
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
@@ -47,15 +51,5 @@ public abstract class ElasticSearchDownloader {
 			numItems++;
 		}
 	}
-
-	/**
-	 * 
-	 * 
-	 * @param idAndVersionFactory
-	 *            the {@link IdAndVersionFactory} to {@link IdAndVersionFactory#create(Object, long) create} new
-	 *            {@link IdAndVersion} objects
-	 * @return an {@link Iterator} that never returns <code>null</code> elements
-	 */
-	protected abstract Iterator<IdAndVersion> iterate(IdAndVersionFactory idAndVersionFactory);
 
 }

@@ -13,19 +13,19 @@ import java.util.Iterator;
 import com.aconex.scrutineer.IdAndVersion;
 import com.aconex.scrutineer.IdAndVersionStream;
 
-public class ElasticSearchIdAndVersionStream implements IdAndVersionStream {
+public class ElasticsearchIdAndVersionStream implements IdAndVersionStream {
 
 	private static final String ELASTIC_SEARCH_UNSORTED_FILE = "elastic-search-unsorted.dat";
 
 	private static final String ELASTIC_SEARCH_SORTED_FILE = "elastic-search-sorted.dat";
 
-	private final ElasticSearchDownloader elasticSearchDownloader;
-	private final ElasticSearchSorter elasticSearchSorter;
+	private final ElasticsearchDownloader elasticSearchDownloader;
+	private final ElasticsearchSorter elasticSearchSorter;
 	private final IteratorFactory iteratorFactory;
 	private final File unsortedFile;
 	private final File sortedFile;
 
-	public ElasticSearchIdAndVersionStream(final ElasticSearchDownloader elasticSearchDownloader, final ElasticSearchSorter elasticSearchSorter, final IteratorFactory iteratorFactory, final String workingDirectory) {
+	public ElasticsearchIdAndVersionStream(final ElasticsearchDownloader elasticSearchDownloader, final ElasticsearchSorter elasticSearchSorter, final IteratorFactory iteratorFactory, final String workingDirectory) {
 		this.elasticSearchDownloader = elasticSearchDownloader;
 		this.elasticSearchSorter = elasticSearchSorter;
 		this.iteratorFactory = iteratorFactory;
