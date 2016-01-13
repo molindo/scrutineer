@@ -3,7 +3,7 @@ package com.aconex.scrutineer;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.elasticsearch.common.joda.time.DateTimeZone;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 public class TimestampFormatterTest {

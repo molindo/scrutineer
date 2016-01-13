@@ -21,8 +21,6 @@ import com.aconex.scrutineer.IdAndVersion;
 @SuppressWarnings("unsafe")
 public class ElasticSearchIdAndVersionStreamTest {
 
-	private static final String UNSORTED_FILENAME = "elastic-search-unsorted.dat";
-
 	private static final String SORTED_FILENAME = "elastic-search-sorted.dat";
 
 	@Mock

@@ -1,6 +1,6 @@
 package com.aconex.scrutineer;
 
-import org.elasticsearch.common.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.aconex.scrutineer.javautil.SystemTimeSource;
 import com.aconex.scrutineer.javautil.TimeSource;
