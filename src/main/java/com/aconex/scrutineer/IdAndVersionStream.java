@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 public interface IdAndVersionStream {
 
-    void open();
+	void open();
 
-    Iterator<IdAndVersion> iterator();
+	Iterator<IdAndVersion> iterator();
 
-    void close();
+	void close();
 }

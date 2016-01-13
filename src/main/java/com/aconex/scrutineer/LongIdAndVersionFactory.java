@@ -8,11 +8,11 @@ public enum LongIdAndVersionFactory implements IdAndVersionFactory {
 	INSTANCE;
 
 	@Override
-	public LongIdAndVersion create(Object id, long version) {
+	public LongIdAndVersion create(final Object id, final long version) {
 		return new LongIdAndVersion(toLong(id), version);
 	}
 
-	private long toLong(Object id) {
+	private long toLong(final Object id) {
 		if (id instanceof Number) {
 			return ((Number) id).longValue();
 		} else {
@@ -20,7 +20,8 @@ public enum LongIdAndVersionFactory implements IdAndVersionFactory {
 		}
 	}
 
-	public LongIdAndVersion readFromStream(ObjectInputStream inputStream) throws IOException {
+	@Override
+	public LongIdAndVersion readFromStream(final ObjectInputStream inputStream) throws IOException {
 		return new LongIdAndVersion(inputStream.readLong(), inputStream.readLong());
 	}
 }

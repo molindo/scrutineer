@@ -1,27 +1,28 @@
 package com.aconex.scrutineer.javautil;
 
-import com.aconex.scrutineer.IdAndVersion;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
+
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Iterator;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import com.aconex.scrutineer.IdAndVersion;
 
 public class JavaIteratorIdAndVersionStreamTest {
 
-    private Iterator<IdAndVersion> iterator;
+	private Iterator<IdAndVersion> iterator;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    public void shouldPassThroughIterator() {
-        JavaIteratorIdAndVersionStream javaIteratorIdAndVersionStream = new JavaIteratorIdAndVersionStream(iterator);
-        assertThat(javaIteratorIdAndVersionStream.iterator(), is(iterator));
-    }
+	@Test
+	public void shouldPassThroughIterator() {
+		final JavaIteratorIdAndVersionStream javaIteratorIdAndVersionStream = new JavaIteratorIdAndVersionStream(iterator);
+		assertThat(javaIteratorIdAndVersionStream.iterator(), is(iterator));
+	}
 }

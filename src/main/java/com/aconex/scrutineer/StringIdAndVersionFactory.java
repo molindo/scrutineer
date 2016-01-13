@@ -8,11 +8,11 @@ public enum StringIdAndVersionFactory implements IdAndVersionFactory {
 	INSTANCE;
 
 	@Override
-	public StringIdAndVersion create(Object id, long version) {
+	public StringIdAndVersion create(final Object id, final long version) {
 		return new StringIdAndVersion(toString(id), version);
 	}
 
-	private String toString(Object id) {
+	private String toString(final Object id) {
 		if (id instanceof Number) {
 			return ((Number) id).toString();
 		} else {
@@ -21,7 +21,7 @@ public enum StringIdAndVersionFactory implements IdAndVersionFactory {
 	}
 
 	@Override
-	public StringIdAndVersion readFromStream(ObjectInputStream inputStream) throws IOException {
+	public StringIdAndVersion readFromStream(final ObjectInputStream inputStream) throws IOException {
 		return new StringIdAndVersion(inputStream.readUTF(), inputStream.readLong());
 	}
 }

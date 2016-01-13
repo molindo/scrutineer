@@ -10,37 +10,36 @@ public class LongIdAndVersion extends AbstractIdAndVersion {
 
 	public static final IdAndVersionFactory FACTORY = LongIdAndVersionFactory.INSTANCE;
 
-    private final long id;
+	private final long id;
 
-    public LongIdAndVersion(long id, long version) {
-    	super(version);
-        this.id = id;
-    }
-
-    public String getId() {
-    	// TODO
-        return Long.toString(id);
-    }
-
-    public long getLongId() {
-        return id;
-    }
+	public LongIdAndVersion(final long id, final long version) {
+		super(version);
+		this.id = id;
+	}
 
 	@Override
-	protected HashCodeBuilder appendId(HashCodeBuilder appender) {
+	public String getId() {
+		// TODO
+		return Long.toString(id);
+	}
+
+	public long getLongId() {
+		return id;
+	}
+
+	@Override
+	protected HashCodeBuilder appendId(final HashCodeBuilder appender) {
 		return appender.append(id);
 	}
 
 	@Override
-	protected CompareToBuilder appendId(CompareToBuilder appender, IdAndVersion other) {
-		return appender.append(id, ((LongIdAndVersion)other).id);
+	protected CompareToBuilder appendId(final CompareToBuilder appender, final IdAndVersion other) {
+		return appender.append(id, ((LongIdAndVersion) other).id);
 	}
 
 	@Override
-	protected void writeId(ObjectOutputStream objectOutputStream) throws IOException {
-        objectOutputStream.writeLong(id);
+	protected void writeId(final ObjectOutputStream objectOutputStream) throws IOException {
+		objectOutputStream.writeLong(id);
 	}
-
-
 
 }

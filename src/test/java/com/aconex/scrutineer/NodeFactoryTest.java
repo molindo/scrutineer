@@ -1,24 +1,23 @@
 package com.aconex.scrutineer;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.core.Is.*;
 
 import org.elasticsearch.common.settings.Settings;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 public class NodeFactoryTest {
 
-    @Test
-    public void shouldCreateNodeWithCorrectSettings() {
+	@Test
+	public void shouldCreateNodeWithCorrectSettings() {
 
-        NodeFactory nodeFactory = new NodeFactory();
+		final NodeFactory nodeFactory = new NodeFactory();
 
-        Settings settings = nodeFactory.createSettings("mycluster");
+		final Settings settings = nodeFactory.createSettings("mycluster");
 
-        assertThat(settings.get("cluster.name"), is("mycluster"));
-        assertThat(settings.get("node.client"), is("true"));
-        assertThat(settings.get("node.name"), is("scrutineer"));
-    }
+		assertThat(settings.get("cluster.name"), is("mycluster"));
+		assertThat(settings.get("node.client"), is("true"));
+		assertThat(settings.get("node.name"), is("scrutineer"));
+	}
 
 }

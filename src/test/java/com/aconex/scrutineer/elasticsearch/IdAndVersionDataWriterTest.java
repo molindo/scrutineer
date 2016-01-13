@@ -1,43 +1,44 @@
 package com.aconex.scrutineer.elasticsearch;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import com.aconex.scrutineer.IdAndVersion;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.aconex.scrutineer.IdAndVersion;
+
 public class IdAndVersionDataWriterTest {
 
-    @Mock
-    private ObjectOutputStream objectOutputStream;
+	@Mock
+	private ObjectOutputStream objectOutputStream;
 
-    @Mock
-    private IdAndVersion idAndVersion;
+	@Mock
+	private IdAndVersion idAndVersion;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    public void shouldWriteEntry() throws IOException {
-        IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
-        idAndVersionDataWriter.writeEntry(idAndVersion);
+	@Test
+	public void shouldWriteEntry() throws IOException {
+		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
+		idAndVersionDataWriter.writeEntry(idAndVersion);
 
-        verify(idAndVersion).writeToStream(objectOutputStream);
-    }
+		verify(idAndVersion).writeToStream(objectOutputStream);
+	}
 
-    @Test
-    public void shouldCloseStream() throws IOException {
-        IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
-        idAndVersionDataWriter.close();
+	@Test
+	public void shouldCloseStream() throws IOException {
+		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
+		idAndVersionDataWriter.close();
 
-        verify(objectOutputStream).close();
-    }
+		verify(objectOutputStream).close();
+	}
 
 }

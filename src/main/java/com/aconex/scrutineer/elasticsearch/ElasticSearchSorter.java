@@ -13,26 +13,27 @@ import com.google.common.io.CountingInputStream;
 
 public class ElasticSearchSorter {
 
-    private static final Logger LOG = LogUtils.loggerForThisClass();
+	private static final Logger LOG = LogUtils.loggerForThisClass();
 
-    private final Sorter<IdAndVersion> sorter;
+	private final Sorter<IdAndVersion> sorter;
 
-    public ElasticSearchSorter(Sorter<IdAndVersion> sorter) {
-        this.sorter = sorter;
-    }
+	public ElasticSearchSorter(final Sorter<IdAndVersion> sorter) {
+		this.sorter = sorter;
+	}
 
-    public void sort(InputStream inputStream, OutputStream outputStream) {
-        long begin = System.currentTimeMillis();
-        CountingInputStream countingInputStream = new CountingInputStream(inputStream);
-        doSort(countingInputStream, outputStream);
-        LogUtils.infoTimeTaken(LOG, begin, countingInputStream.getCount(), "Sorted stream of %d bytes", countingInputStream.getCount());
-    }
+	public void sort(final InputStream inputStream, final OutputStream outputStream) {
+		final long begin = System.currentTimeMillis();
+		final CountingInputStream countingInputStream = new CountingInputStream(inputStream);
+		doSort(countingInputStream, outputStream);
+		LogUtils.infoTimeTaken(LOG, begin, countingInputStream
+				.getCount(), "Sorted stream of %d bytes", countingInputStream.getCount());
+	}
 
-    private void doSort(InputStream inputStream, OutputStream outputStream ) {
-        try {
-            sorter.sort(inputStream,outputStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private void doSort(final InputStream inputStream, final OutputStream outputStream) {
+		try {
+			sorter.sort(inputStream, outputStream);
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

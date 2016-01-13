@@ -9,8 +9,8 @@ import com.fasterxml.sort.DataWriter;
 import com.fasterxml.sort.DataWriterFactory;
 
 public class IdAndVersionDataWriterFactory extends DataWriterFactory<IdAndVersion> {
-    @Override
-    public DataWriter<IdAndVersion> constructWriter(OutputStream outputStream) throws IOException {
-        return new IdAndVersionDataWriter(new ObjectOutputStream(outputStream));
-    }
+	@Override
+	public DataWriter<IdAndVersion> constructWriter(final OutputStream outputStream) throws IOException {
+		return new IdAndVersionDataWriter(new ObjectOutputStream(outputStream));
+	}
 }

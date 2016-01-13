@@ -1,42 +1,42 @@
 package com.aconex.scrutineer.elasticsearch;
 
-import com.aconex.scrutineer.IdAndVersion;
-
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.aconex.scrutineer.IdAndVersion;
+
 public class IdAndVersionInputStreamIterator implements Iterator<IdAndVersion> {
 
-    private final IdAndVersionDataReader idAndVersionDataReader;
-    private IdAndVersion currentValue;
+	private final IdAndVersionDataReader idAndVersionDataReader;
+	private IdAndVersion currentValue;
 
-    public IdAndVersionInputStreamIterator(IdAndVersionDataReader idAndVersionDataReader) {
-        try {
-            this.idAndVersionDataReader = idAndVersionDataReader;
-            this.currentValue = idAndVersionDataReader.readNext();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public IdAndVersionInputStreamIterator(final IdAndVersionDataReader idAndVersionDataReader) {
+		try {
+			this.idAndVersionDataReader = idAndVersionDataReader;
+			currentValue = idAndVersionDataReader.readNext();
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public boolean hasNext() {
-        return currentValue != null;
-    }
+	@Override
+	public boolean hasNext() {
+		return currentValue != null;
+	}
 
-    @Override
-    public IdAndVersion next() {
-        try {
-            IdAndVersion result = currentValue;
-            currentValue = idAndVersionDataReader.readNext();
-            return result;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public IdAndVersion next() {
+		try {
+			final IdAndVersion result = currentValue;
+			currentValue = idAndVersionDataReader.readNext();
+			return result;
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
 }

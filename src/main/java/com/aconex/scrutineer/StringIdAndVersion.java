@@ -12,27 +12,28 @@ public class StringIdAndVersion extends AbstractIdAndVersion {
 
 	private final String id;
 
-	public StringIdAndVersion(String id, long version) {
+	public StringIdAndVersion(final String id, final long version) {
 		super(version);
 		this.id = id;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
 	@Override
-	protected HashCodeBuilder appendId(HashCodeBuilder appender) {
+	protected HashCodeBuilder appendId(final HashCodeBuilder appender) {
 		return appender.append(id);
 	}
 
 	@Override
-	protected CompareToBuilder appendId(CompareToBuilder appender, IdAndVersion other) {
+	protected CompareToBuilder appendId(final CompareToBuilder appender, final IdAndVersion other) {
 		return appender.append(id, ((StringIdAndVersion) other).id);
 	}
 
 	@Override
-	protected void writeId(ObjectOutputStream objectOutputStream) throws IOException {
+	protected void writeId(final ObjectOutputStream objectOutputStream) throws IOException {
 		objectOutputStream.writeUTF(getId());
 	}
 

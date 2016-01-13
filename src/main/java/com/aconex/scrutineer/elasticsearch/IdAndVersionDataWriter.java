@@ -7,19 +7,19 @@ import com.aconex.scrutineer.IdAndVersion;
 import com.fasterxml.sort.DataWriter;
 
 class IdAndVersionDataWriter extends DataWriter<IdAndVersion> {
-    private final ObjectOutputStream objectOutputStream;
+	private final ObjectOutputStream objectOutputStream;
 
-    public IdAndVersionDataWriter(ObjectOutputStream objectOutputStream) {
-        this.objectOutputStream = objectOutputStream;
-    }
+	public IdAndVersionDataWriter(final ObjectOutputStream objectOutputStream) {
+		this.objectOutputStream = objectOutputStream;
+	}
 
-    @Override
-    public void writeEntry(IdAndVersion item) throws IOException {
-        item.writeToStream(objectOutputStream);
-    }
+	@Override
+	public void writeEntry(final IdAndVersion item) throws IOException {
+		item.writeToStream(objectOutputStream);
+	}
 
-    @Override
-    public void close() throws IOException {
-        objectOutputStream.close();
-    }
+	@Override
+	public void close() throws IOException {
+		objectOutputStream.close();
+	}
 }

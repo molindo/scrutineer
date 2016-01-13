@@ -1,8 +1,8 @@
 package com.aconex.scrutineer.elasticsearch;
 
-import static com.aconex.scrutineer.HasIdAndVersionMatcher.hasIdAndVersion;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.aconex.scrutineer.HasIdAndVersionMatcher.*;
+import static org.elasticsearch.node.NodeBuilder.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.Iterator;
 
@@ -25,58 +25,59 @@ import com.fasterxml.sort.util.NaturalComparator;
 
 public class ElasticSearchIdAndVersionStreamIntegrationTest {
 
-    private static final String INDEX_NAME = "local";
+	private static final String INDEX_NAME = "local";
 	private final IdAndVersionFactory idAndVersionFactory = StringIdAndVersion.FACTORY;
-    private Client client;
-    private ElasticSearchTestHelper elasticSearchTestHelper;
+	private Client client;
+	private ElasticSearchTestHelper elasticSearchTestHelper;
 
-    @Before
-    public void setup() {
-        Node node = nodeBuilder().local(true).node();
-        client = node.client();
-        deleteIndexIfExists();
+	@Before
+	public void setup() {
+		final Node node = nodeBuilder().local(true).node();
+		client = node.client();
+		deleteIndexIfExists();
 
-        indexIdAndVersion("1", 1);
-        indexIdAndVersion("3", 3);
-        indexIdAndVersion("2", 2);
+		indexIdAndVersion("1", 1);
+		indexIdAndVersion("3", 3);
+		indexIdAndVersion("2", 2);
 
-        client.admin().indices().prepareFlush(INDEX_NAME).execute().actionGet();
-    }
+		client.admin().indices().prepareFlush(INDEX_NAME).execute().actionGet();
+	}
 
-    @After
-    public void teardown() {
-        client.close();
-    }
+	@After
+	public void teardown() {
+		client.close();
+	}
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void shouldGetStreamFromElasticSearch() {
+	@Test
+	@SuppressWarnings("unchecked")
+	public void shouldGetStreamFromElasticSearch() {
 
-        SortConfig sortConfig = new SortConfig().withMaxMemoryUsage(256*1024*1024);
-        DataReaderFactory<IdAndVersion> dataReaderFactory = new IdAndVersionDataReaderFactory(idAndVersionFactory);
-        DataWriterFactory<IdAndVersion> dataWriterFactory = new IdAndVersionDataWriterFactory();
-        Sorter sorter = new Sorter(sortConfig, dataReaderFactory, dataWriterFactory, new NaturalComparator<IdAndVersion>());
-        ElasticSearchDownloader elasticSearchDownloader = new ElasticSearchDownloader(client, INDEX_NAME, "_type:idandversion", idAndVersionFactory);
-        ElasticSearchIdAndVersionStream elasticSearchIdAndVersionStream =
-                new ElasticSearchIdAndVersionStream(elasticSearchDownloader, new ElasticSearchSorter(sorter), new IteratorFactory(idAndVersionFactory), SystemUtils.getJavaIoTmpDir().getAbsolutePath());
+		final SortConfig sortConfig = new SortConfig().withMaxMemoryUsage(256 * 1024 * 1024);
+		final DataReaderFactory<IdAndVersion> dataReaderFactory = new IdAndVersionDataReaderFactory(idAndVersionFactory);
+		final DataWriterFactory<IdAndVersion> dataWriterFactory = new IdAndVersionDataWriterFactory();
+		final Sorter sorter = new Sorter(sortConfig, dataReaderFactory, dataWriterFactory, new NaturalComparator<IdAndVersion>());
+		final ElasticSearchDownloader elasticSearchDownloader = new ElasticSearchDownloader(client, INDEX_NAME, "_type:idandversion", idAndVersionFactory);
+		final ElasticSearchIdAndVersionStream elasticSearchIdAndVersionStream = new ElasticSearchIdAndVersionStream(elasticSearchDownloader, new ElasticSearchSorter(sorter), new IteratorFactory(idAndVersionFactory), SystemUtils
+				.getJavaIoTmpDir().getAbsolutePath());
 
-        elasticSearchIdAndVersionStream.open();
-        Iterator<IdAndVersion> iterator = elasticSearchIdAndVersionStream.iterator();
+		elasticSearchIdAndVersionStream.open();
+		final Iterator<IdAndVersion> iterator = elasticSearchIdAndVersionStream.iterator();
 
-        assertThat(iterator.next(), hasIdAndVersion("1",1));
-        assertThat(iterator.next(), hasIdAndVersion("2",2));
-        assertThat(iterator.next(), hasIdAndVersion("3",3));
+		assertThat(iterator.next(), hasIdAndVersion("1", 1));
+		assertThat(iterator.next(), hasIdAndVersion("2", 2));
+		assertThat(iterator.next(), hasIdAndVersion("3", 3));
 
-        elasticSearchIdAndVersionStream.close();
-    }
+		elasticSearchIdAndVersionStream.close();
+	}
 
-    private void deleteIndexIfExists() {
-        elasticSearchTestHelper = new ElasticSearchTestHelper(client);
-        elasticSearchTestHelper.deleteIndexIfItExists(INDEX_NAME);
-    }
+	private void deleteIndexIfExists() {
+		elasticSearchTestHelper = new ElasticSearchTestHelper(client);
+		elasticSearchTestHelper.deleteIndexIfItExists(INDEX_NAME);
+	}
 
-    private void indexIdAndVersion(String id, long version) {
-        client.prepareIndex(INDEX_NAME,"idandversion").setId(id).setOperationThreaded(false).setVersion(version).setVersionType(VersionType.EXTERNAL).setSource("{value:1}").execute().actionGet();
-    }
+	private void indexIdAndVersion(final String id, final long version) {
+		client.prepareIndex(INDEX_NAME, "idandversion").setId(id).setOperationThreaded(false).setVersion(version)
+				.setVersionType(VersionType.EXTERNAL).setSource("{value:1}").execute().actionGet();
+	}
 
 }

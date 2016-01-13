@@ -1,138 +1,134 @@
 package com.aconex.scrutineer;
 
-import com.aconex.scrutineer.javautil.ControlledTimeSource;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.aconex.scrutineer.javautil.ControlledTimeSource;
 
 public class CoincidentFilteredStreamVerifierListenerTest {
 
+	@Mock
+	private IdAndVersionStreamVerifierListener otherListener;
 
-    @Mock
-    private IdAndVersionStreamVerifierListener otherListener;
+	@Mock
+	private IdAndVersion idAndVersion, primaryIdAndVersion, secondaryIdAndVersion;
 
-    @Mock
-    private IdAndVersion idAndVersion, primaryIdAndVersion, secondaryIdAndVersion;
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@Test
+	public void testShouldDelegateOnMissingInPrimaryStream() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(otherListener);
 
-    @Test
-    public void testShouldDelegateOnMissingInPrimaryStream() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(otherListener);
+		coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(idAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(idAndVersion);
+		verify(otherListener).onMissingInPrimaryStream(idAndVersion);
+		verify(otherListener, never()).onMissingInSecondaryStream(idAndVersion);
+	}
 
-        verify(otherListener).onMissingInPrimaryStream(idAndVersion);
-        verify(otherListener, never()).onMissingInSecondaryStream(idAndVersion);
-    }
+	@Test
+	public void testShouldDelegateOnMissingInSecondaryStream() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(otherListener);
 
-    @Test
-    public void testShouldDelegateOnMissingInSecondaryStream() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(otherListener);
+		coincidentFilteredStreamVerifierListener.onMissingInSecondaryStream(idAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onMissingInSecondaryStream(idAndVersion);
+		verify(otherListener).onMissingInSecondaryStream(idAndVersion);
+		verify(otherListener, never()).onMissingInPrimaryStream(idAndVersion);
+	}
 
-        verify(otherListener).onMissingInSecondaryStream(idAndVersion);
-        verify(otherListener, never()).onMissingInPrimaryStream(idAndVersion);
-    }
+	@Test
+	public void shouldDelegateOnMismatchIfPrimaryTimestampIsBeforeStartOfRun() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(30), otherListener);
 
-    @Test
-    public void shouldDelegateOnMismatchIfPrimaryTimestampIsBeforeStartOfRun() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(30), otherListener);
+		when(primaryIdAndVersion.getVersion()).thenReturn(10L);
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
+		coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
 
-        when(primaryIdAndVersion.getVersion()).thenReturn(10L);
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	}
 
-        coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateOnMismatchIfPrimaryTimestampIsAfterRunStarted() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
 
-        verify(otherListener).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
-    }
+		when(primaryIdAndVersion.getVersion()).thenReturn(10L);
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
-    @Test
-    public void shouldNotDelegateOnMismatchIfPrimaryTimestampIsAfterRunStarted() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
+		coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
 
-        when(primaryIdAndVersion.getVersion()).thenReturn(10L);
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	}
 
-        coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateOnMismatchIfSecondaryTimestampIsAfterRunStarted() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
 
-        verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
-    }
+		when(primaryIdAndVersion.getVersion()).thenReturn(1L);
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
-    @Test
-    public void shouldNotDelegateOnMismatchIfSecondaryTimestampIsAfterRunStarted() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
+		coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
 
-        when(primaryIdAndVersion.getVersion()).thenReturn(1L);
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	}
 
-        coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateOnMismatchIfBothItemsTimestampsAreAfterRunStarted() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
 
-        verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
-    }
+		when(primaryIdAndVersion.getVersion()).thenReturn(10L);
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
-    @Test
-    public void shouldNotDelegateOnMismatchIfBothItemsTimestampsAreAfterRunStarted() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
+		coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
 
-        when(primaryIdAndVersion.getVersion()).thenReturn(10L);
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	}
 
-        verify(otherListener, never()).onVersionMisMatch(primaryIdAndVersion, secondaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateOnMissingInSecondaryIfItemIsAfterRunStarted() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
 
-    }
+		when(primaryIdAndVersion.getVersion()).thenReturn(10L);
 
-    @Test
-    public void shouldNotDelegateOnMissingInSecondaryIfItemIsAfterRunStarted() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
+		coincidentFilteredStreamVerifierListener.onMissingInSecondaryStream(primaryIdAndVersion);
 
-        when(primaryIdAndVersion.getVersion()).thenReturn(10L);
+		verify(otherListener, never()).onMissingInSecondaryStream(primaryIdAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onMissingInSecondaryStream(primaryIdAndVersion);
+	}
 
-        verify(otherListener, never()).onMissingInSecondaryStream(primaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateOnMissingInPrimaryIfItemIsAfterRunStarted() {
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
 
-    }
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
-    @Test
-    public void shouldNotDelegateOnMissingInPrimaryIfItemIsAfterRunStarted() {
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(new ControlledTimeSource(5), otherListener);
+		coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(secondaryIdAndVersion);
 
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener, never()).onMissingInPrimaryStream(secondaryIdAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(secondaryIdAndVersion);
+	}
 
-        verify(otherListener, never()).onMissingInPrimaryStream(secondaryIdAndVersion);
+	@Test
+	public void shouldNotDelegateWhenTimeMoves() {
 
-    }
+		final ControlledTimeSource timeSource = new ControlledTimeSource(5);
+		final CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(timeSource, otherListener);
 
-    @Test
-    public void shouldNotDelegateWhenTimeMoves(){
+		timeSource.setCurrentTime(25);
 
-        ControlledTimeSource timeSource = new ControlledTimeSource(5);
-        CoincidentFilteredStreamVerifierListener coincidentFilteredStreamVerifierListener = new CoincidentFilteredStreamVerifierListener(timeSource, otherListener);
+		when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
 
-        timeSource.setCurrentTime(25);
+		coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(secondaryIdAndVersion);
 
-        when(secondaryIdAndVersion.getVersion()).thenReturn(20L);
+		verify(otherListener, never()).onMissingInPrimaryStream(secondaryIdAndVersion);
 
-        coincidentFilteredStreamVerifierListener.onMissingInPrimaryStream(secondaryIdAndVersion);
-
-        verify(otherListener, never()).onMissingInPrimaryStream(secondaryIdAndVersion);
-
-    }
-
+	}
 
 }

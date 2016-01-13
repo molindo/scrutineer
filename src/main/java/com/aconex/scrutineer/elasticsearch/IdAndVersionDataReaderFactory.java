@@ -13,13 +13,13 @@ public class IdAndVersionDataReaderFactory extends DataReaderFactory<IdAndVersio
 
 	private final IdAndVersionFactory factory;
 
-	public IdAndVersionDataReaderFactory(IdAndVersionFactory factory) {
+	public IdAndVersionDataReaderFactory(final IdAndVersionFactory factory) {
 		this.factory = factory;
 	}
 
-    @Override
-    public DataReader<IdAndVersion> constructReader(final InputStream inputStream) throws IOException {
-        return new IdAndVersionDataReader(factory, new ObjectInputStream(inputStream));
+	@Override
+	public DataReader<IdAndVersion> constructReader(final InputStream inputStream) throws IOException {
+		return new IdAndVersionDataReader(factory, new ObjectInputStream(inputStream));
 
-    }
+	}
 }
