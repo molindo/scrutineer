@@ -24,9 +24,9 @@ public class ElasticsearchIdAndVersionStreamTest {
 	private static final String SORTED_FILENAME = "elastic-search-sorted.dat";
 
 	@Mock
-	private ElasticsearchDownloader elasticSearchDownloader;
+	private ElasticsearchDownloader elasticsearchDownloader;
 	@Mock
-	private ElasticsearchSorter elasticSearchSorter;
+	private ElasticsearchSorter elasticsearchSorter;
 	@Mock
 	private IteratorFactory iteratorFactory;
 	@Mock
@@ -45,22 +45,22 @@ public class ElasticsearchIdAndVersionStreamTest {
 
 	@Test
 	public void shouldDownloadAndSortOnSetup() throws IOException {
-		final ElasticsearchIdAndVersionStream elasticSearchIdAndVersionStream = spy(new ElasticsearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
+		final ElasticsearchIdAndVersionStream elasticsearchIdAndVersionStream = spy(new ElasticsearchIdAndVersionStream(elasticsearchDownloader, elasticsearchSorter, iteratorFactory, SystemUtils
 				.getJavaIoTmpDir().getAbsolutePath()));
-		doReturn(sortedOutputStream).when(elasticSearchIdAndVersionStream).createSortedOutputStream();
-		doReturn(unSortedOutputStream).when(elasticSearchIdAndVersionStream).createUnsortedOutputStream();
-		doReturn(unSortedInputStream).when(elasticSearchIdAndVersionStream).createUnSortedInputStream();
-		elasticSearchIdAndVersionStream.open();
-		verify(elasticSearchDownloader).downloadTo(unSortedOutputStream);
-		verify(elasticSearchSorter).sort(unSortedInputStream, sortedOutputStream);
+		doReturn(sortedOutputStream).when(elasticsearchIdAndVersionStream).createSortedOutputStream();
+		doReturn(unSortedOutputStream).when(elasticsearchIdAndVersionStream).createUnsortedOutputStream();
+		doReturn(unSortedInputStream).when(elasticsearchIdAndVersionStream).createUnSortedInputStream();
+		elasticsearchIdAndVersionStream.open();
+		verify(elasticsearchDownloader).downloadTo(unSortedOutputStream);
+		verify(elasticsearchSorter).sort(unSortedInputStream, sortedOutputStream);
 	}
 
 	@Test
 	public void shouldReturnAFileIterator() throws IOException {
-		final ElasticsearchIdAndVersionStream elasticSearchIdAndVersionStream = new ElasticsearchIdAndVersionStream(elasticSearchDownloader, elasticSearchSorter, iteratorFactory, SystemUtils
+		final ElasticsearchIdAndVersionStream elasticsearchIdAndVersionStream = new ElasticsearchIdAndVersionStream(elasticsearchDownloader, elasticsearchSorter, iteratorFactory, SystemUtils
 				.getJavaIoTmpDir().getAbsolutePath());
 		when(iteratorFactory.forFile(new File(SystemUtils.getJavaIoTmpDir(), SORTED_FILENAME))).thenReturn(iterator);
-		assertThat(elasticSearchIdAndVersionStream.iterator(), is(iterator));
+		assertThat(elasticsearchIdAndVersionStream.iterator(), is(iterator));
 	}
 
 }

@@ -32,8 +32,8 @@ public class ElasticsearchSorterTest {
 
 	@Test
 	public void shouldSortInputStream() throws IOException {
-		final ElasticsearchSorter elasticSearchSorter = new ElasticsearchSorter(sorter);
-		elasticSearchSorter.sort(inputstream, outputstream);
+		final ElasticsearchSorter elasticsearchSorter = new ElasticsearchSorter(sorter);
+		elasticsearchSorter.sort(inputstream, outputstream);
 		verify(sorter).sort(isA(CountingInputStream.class), eq(outputstream));
 	}
 }

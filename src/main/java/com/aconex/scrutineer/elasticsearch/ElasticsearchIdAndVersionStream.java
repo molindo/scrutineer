@@ -19,15 +19,15 @@ public class ElasticsearchIdAndVersionStream implements IdAndVersionStream {
 
 	private static final String ELASTIC_SEARCH_SORTED_FILE = "elastic-search-sorted.dat";
 
-	private final ElasticsearchDownloader elasticSearchDownloader;
-	private final ElasticsearchSorter elasticSearchSorter;
+	private final ElasticsearchDownloader elasticsearchDownloader;
+	private final ElasticsearchSorter elasticsearchSorter;
 	private final IteratorFactory iteratorFactory;
 	private final File unsortedFile;
 	private final File sortedFile;
 
-	public ElasticsearchIdAndVersionStream(final ElasticsearchDownloader elasticSearchDownloader, final ElasticsearchSorter elasticSearchSorter, final IteratorFactory iteratorFactory, final String workingDirectory) {
-		this.elasticSearchDownloader = elasticSearchDownloader;
-		this.elasticSearchSorter = elasticSearchSorter;
+	public ElasticsearchIdAndVersionStream(final ElasticsearchDownloader elasticsearchDownloader, final ElasticsearchSorter elasticsearchSorter, final IteratorFactory iteratorFactory, final String workingDirectory) {
+		this.elasticsearchDownloader = elasticsearchDownloader;
+		this.elasticsearchSorter = elasticsearchSorter;
 		this.iteratorFactory = iteratorFactory;
 		unsortedFile = new File(workingDirectory, ELASTIC_SEARCH_UNSORTED_FILE);
 		sortedFile = new File(workingDirectory, ELASTIC_SEARCH_SORTED_FILE);
@@ -35,8 +35,8 @@ public class ElasticsearchIdAndVersionStream implements IdAndVersionStream {
 
 	@Override
 	public void open() {
-		elasticSearchDownloader.downloadTo(createUnsortedOutputStream());
-		elasticSearchSorter.sort(createUnSortedInputStream(), createSortedOutputStream());
+		elasticsearchDownloader.downloadTo(createUnsortedOutputStream());
+		elasticsearchSorter.sort(createUnSortedInputStream(), createSortedOutputStream());
 	}
 
 	@Override
