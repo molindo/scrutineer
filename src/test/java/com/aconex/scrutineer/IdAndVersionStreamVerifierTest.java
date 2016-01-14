@@ -13,8 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.aconex.scrutineer.javautil.JavaIteratorIdAndVersionStream;
-import com.google.common.collect.Iterators;
+import com.aconex.scrutineer.stream.IterableIdAndVersionStream;
 
 public class IdAndVersionStreamVerifierTest {
 
@@ -183,8 +182,8 @@ public class IdAndVersionStreamVerifierTest {
 
 	}
 
-	private static JavaIteratorIdAndVersionStream streamOf(final IdAndVersion... items) {
-		return new JavaIteratorIdAndVersionStream(Iterators.forArray(items));
+	private static IterableIdAndVersionStream streamOf(final IdAndVersion... items) {
+		return new IterableIdAndVersionStream(items);
 	}
 
 	static IdAndVersion item(final long version) {
