@@ -18,9 +18,21 @@ public class FileIdAndVersionStream implements IdAndVersionStream {
 	private final IdAndVersionFactory idAndVersionFactory;
 	private final ObjectInputStream stream;
 
+	private final boolean sorted;
+
 	public FileIdAndVersionStream(final IdAndVersionFactory idAndVersionFactory, final ObjectInputStream stream) {
+		this(idAndVersionFactory, stream, false);
+	}
+
+	public FileIdAndVersionStream(final IdAndVersionFactory idAndVersionFactory, final ObjectInputStream stream, final boolean sorted) {
 		this.idAndVersionFactory = idAndVersionFactory;
 		this.stream = stream;
+		this.sorted = sorted;
+	}
+
+	@Override
+	public boolean isSorted() {
+		return sorted;
 	}
 
 	@Override

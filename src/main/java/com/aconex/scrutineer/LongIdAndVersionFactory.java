@@ -2,6 +2,7 @@ package com.aconex.scrutineer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public enum LongIdAndVersionFactory implements IdAndVersionFactory {
 
@@ -24,4 +25,11 @@ public enum LongIdAndVersionFactory implements IdAndVersionFactory {
 	public LongIdAndVersion readFromStream(final ObjectInputStream inputStream) throws IOException {
 		return new LongIdAndVersion(inputStream.readLong(), inputStream.readLong());
 	}
+
+	@Override
+	public void writeToStream(final IdAndVersion idAndVersion, final ObjectOutputStream objectOutputStream) throws IOException {
+		objectOutputStream.writeLong(((LongIdAndVersion) idAndVersion).getLongId());
+		objectOutputStream.writeLong(idAndVersion.getVersion());
+	}
+
 }

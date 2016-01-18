@@ -37,6 +37,10 @@ public class SortedIdAndVersionStream implements IdAndVersionStream {
 
 	private IdAndVersionStream sortedStream;
 
+	public static IdAndVersionStream wrapIfNecessary(final IdAndVersionStream stream, final IdAndVersionFactory idAndVersionFactory) {
+		return stream.isSorted() ? stream : new SortedIdAndVersionStream(idAndVersionFactory, stream);
+	}
+
 	public SortedIdAndVersionStream(final IdAndVersionFactory idAndVersionFactory, final IdAndVersionStream unsortedStream) {
 		this(idAndVersionFactory, unsortedStream, null);
 	}
@@ -52,6 +56,11 @@ public class SortedIdAndVersionStream implements IdAndVersionStream {
 		}
 	}
 
+	@Override
+	public boolean isSorted() {
+		return true;
+	}
+
 	/**
 	 * download stream and sort it
 	 */
@@ -63,7 +72,7 @@ public class SortedIdAndVersionStream implements IdAndVersionStream {
 
 	private void sort() {
 		unsortedStream.open();
-		new StreamDownloader(unsortedStream).downloadTo(createUnsortedOutputStream());
+		new StreamDownloader(unsortedStream, idAndVersionFactory).downloadTo(createUnsortedOutputStream());
 		new StreamSorter(createSorter(idAndVersionFactory))
 				.sort(createUnSortedInputStream(), createSortedOutputStream());
 		unsortedStream.close();
@@ -73,7 +82,7 @@ public class SortedIdAndVersionStream implements IdAndVersionStream {
 	private Sorter<IdAndVersion> createSorter(final IdAndVersionFactory factory) {
 		final SortConfig sortConfig = createSortConfig();
 		final DataReaderFactory<IdAndVersion> dataReaderFactory = new IdAndVersionDataReaderFactory(factory);
-		final DataWriterFactory<IdAndVersion> dataWriterFactory = new IdAndVersionDataWriterFactory();
+		final DataWriterFactory<IdAndVersion> dataWriterFactory = new IdAndVersionDataWriterFactory(factory);
 		return new Sorter<IdAndVersion>(sortConfig, dataReaderFactory, dataWriterFactory, new NaturalComparator<IdAndVersion>());
 	}
 
@@ -83,7 +92,7 @@ public class SortedIdAndVersionStream implements IdAndVersionStream {
 
 	IdAndVersionStream createSortedStream() {
 		try {
-			return new FileIdAndVersionStream(idAndVersionFactory, new ObjectInputStream(createSortedInputStream()));
+			return new FileIdAndVersionStream(idAndVersionFactory, new ObjectInputStream(createSortedInputStream()), true);
 		} catch (final IOException e) {
 			throw new RuntimeException("failed to open sorted input stream", e);
 		}

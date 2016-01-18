@@ -1,21 +1,27 @@
 package com.aconex.scrutineer.stream;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import com.aconex.scrutineer.IdAndVersion;
 import com.aconex.scrutineer.IdAndVersionStream;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 
 public class IterableIdAndVersionStream implements IdAndVersionStream {
-	private final Iterable<IdAndVersion> iterable;
+
+	private final ImmutableList<IdAndVersion> list;
 
 	public IterableIdAndVersionStream(final IdAndVersion... idAndVersions) {
-		iterable = Arrays.asList(idAndVersions);
+		list = ImmutableList.copyOf(idAndVersions);
 	}
 
-	@SuppressWarnings("unchecked")
 	public IterableIdAndVersionStream(final Iterable<? extends IdAndVersion> iterable) {
-		this.iterable = (Iterable<IdAndVersion>) iterable;
+		list = ImmutableList.copyOf(iterable);
+	}
+
+	@Override
+	public boolean isSorted() {
+		return Ordering.natural().isOrdered(list);
 	}
 
 	@Override
@@ -25,7 +31,7 @@ public class IterableIdAndVersionStream implements IdAndVersionStream {
 
 	@Override
 	public Iterator<IdAndVersion> iterator() {
-		return iterable.iterator();
+		return list.iterator();
 	}
 
 	@Override

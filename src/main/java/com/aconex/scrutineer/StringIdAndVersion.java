@@ -1,8 +1,5 @@
 package com.aconex.scrutineer;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -30,11 +27,6 @@ public class StringIdAndVersion extends AbstractIdAndVersion {
 	@Override
 	protected CompareToBuilder appendId(final CompareToBuilder appender, final IdAndVersion other) {
 		return appender.append(id, ((StringIdAndVersion) other).id);
-	}
-
-	@Override
-	protected void writeId(final ObjectOutputStream objectOutputStream) throws IOException {
-		objectOutputStream.writeUTF(getId());
 	}
 
 }

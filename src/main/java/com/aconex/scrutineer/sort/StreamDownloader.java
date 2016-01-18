@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 
 import com.aconex.scrutineer.IdAndVersion;
+import com.aconex.scrutineer.IdAndVersionFactory;
 import com.aconex.scrutineer.IdAndVersionStream;
 import com.aconex.scrutineer.LogUtils;
 
@@ -19,9 +20,11 @@ public class StreamDownloader {
 	static final int SCROLL_TIME_IN_MINUTES = 10;
 
 	private final IdAndVersionStream idAndVersionStream;
+	private final IdAndVersionFactory idAndVersionFactory;
 
-	public StreamDownloader(final IdAndVersionStream idAndVersionStream) {
+	public StreamDownloader(final IdAndVersionStream idAndVersionStream, final IdAndVersionFactory idAndVersionFactory) {
 		this.idAndVersionStream = idAndVersionStream;
+		this.idAndVersionFactory = idAndVersionFactory;
 	}
 
 	public void downloadTo(final OutputStream outputStream) {
@@ -38,7 +41,7 @@ public class StreamDownloader {
 				long numItems = 0;
 				final Iterator<IdAndVersion> iterator = idAndVersionStream.iterator();
 				while (iterator.hasNext()) {
-					iterator.next().writeToStream(objectOutputStream);
+					idAndVersionFactory.writeToStream(iterator.next(), objectOutputStream);
 					numItems++;
 				}
 				return numItems;

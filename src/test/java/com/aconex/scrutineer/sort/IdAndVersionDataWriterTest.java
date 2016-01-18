@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.aconex.scrutineer.IdAndVersion;
-import com.aconex.scrutineer.sort.IdAndVersionDataWriter;
+import com.aconex.scrutineer.IdAndVersionFactory;
 
 public class IdAndVersionDataWriterTest {
 
@@ -21,6 +21,9 @@ public class IdAndVersionDataWriterTest {
 	@Mock
 	private IdAndVersion idAndVersion;
 
+	@Mock
+	private IdAndVersionFactory idAndVersionFactory;
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -28,15 +31,15 @@ public class IdAndVersionDataWriterTest {
 
 	@Test
 	public void shouldWriteEntry() throws IOException {
-		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
+		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream, idAndVersionFactory);
 		idAndVersionDataWriter.writeEntry(idAndVersion);
 
-		verify(idAndVersion).writeToStream(objectOutputStream);
+		verify(idAndVersionFactory).writeToStream(idAndVersion, objectOutputStream);
 	}
 
 	@Test
 	public void shouldCloseStream() throws IOException {
-		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream);
+		final IdAndVersionDataWriter idAndVersionDataWriter = new IdAndVersionDataWriter(objectOutputStream, idAndVersionFactory);
 		idAndVersionDataWriter.close();
 
 		verify(objectOutputStream).close();
