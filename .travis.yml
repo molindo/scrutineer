@@ -10,7 +10,7 @@ jdk:
 # whitelist
 branches:
   only:
-    - molindo
+    - master
 
 # checkout settings
 before_install:
