@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>scrutineer</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Scrutineer (Stream Comparator)</name>
 	<description>
